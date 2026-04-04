@@ -6,7 +6,7 @@
  * deep link scheme selection).
  */
 
-import UAParser from "ua-parser-js";
+import { UAParser } from 'ua-parser-js';;
 
 export type OSType = "iOS" | "Android" | "Desktop";
 
