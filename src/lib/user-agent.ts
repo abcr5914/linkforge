@@ -1,4 +1,4 @@
-export function getOS(userAgent: string | null) {
+export function detectClientOS(userAgent: string | null) {
   if (!userAgent) return "Desktop";
 
   const ua = userAgent.toLowerCase();
