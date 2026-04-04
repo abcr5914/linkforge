@@ -58,7 +58,7 @@ export default function RedirectHandler({
           headers: { "Content-Type": "application/json" },
           body: payload,
           keepalive: true,
-        }).catch(() => {}); // Fire and forget
+        }).catch(() => { }); // Fire and forget
       }
     } catch {
       // Analytics should never block the redirect
