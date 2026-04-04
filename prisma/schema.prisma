@@ -1,0 +1,38 @@
+// Prisma schema for the Deep Link Generator
+// Defines the Link and Click models for the application
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+/// Stores generated short links with their metadata and scraped OG tags
+model Link {
+  id            String   @id @default(cuid())
+  originalUrl   String
+  shortCode     String   @unique
+  targetApp     String?  // Detected platform (e.g., "youtube", "spotify")
+  ogTitle       String?  // Scraped Open Graph title
+  ogDescription String?  // Scraped Open Graph description
+  ogImage       String?  // Scraped Open Graph image URL
+  createdAt     DateTime @default(now())
+
+  clicks Click[] // Relation to click events
+
+  @@index([shortCode])
+}
+
+/// Tracks individual click events on short links for analytics
+model Click {
+  id        String   @id @default(cuid())
+  linkId    String
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  osType    String   // "iOS", "Android", or "Desktop"
+  clickedAt DateTime @default(now())
+
+  @@index([linkId])
+}
