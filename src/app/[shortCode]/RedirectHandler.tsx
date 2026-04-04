@@ -43,7 +43,7 @@ export default function RedirectHandler({
     if (hasRun.current) return;
     hasRun.current = true;
 
-    const os = detectClientOS();
+    const os = detectClientOS(navigator.userAgent);
 
     // ── 1. Track the click (non-blocking) ────────────────────────
     try {
