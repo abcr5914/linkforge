@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import AnalyticsDashboard from "./AnalyticsDashboard";
 import Link from "next/link";
-import { CopyButtonProps } from "@/components/CopyButton";
 
 interface PageProps {
   params: Promise<{ shortCode: string }>;
