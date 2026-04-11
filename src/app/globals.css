@@ -1,135 +1,194 @@
 @import "tailwindcss";
 
 /* ─── Standard Font ────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 
-/* ─── Custom Theme ───────────────────────────────────────────────── */
+/* ─── Custom Theme Variables ─────────────────────────────────────── */
+:root {
+  --font-sans: "Outfit", system-ui, sans-serif;
+  
+  /* Light Mode Palette */
+  --bg-color: #f0f3f8;
+  --card-bg: #e2e8f0;
+  --text-main: #334155;
+  --text-muted: #64748b;
+  --border-color: rgba(255, 255, 255, 0.4);
+
+  /* Pastel Colors */
+  --color-pastel-blue: #dbeafe;
+  --color-pastel-pink: #fce7f3;
+  --color-pastel-green: #dcfce7;
+  --color-pastel-yellow: #fef9c3;
+  --color-pastel-purple: #f3e8ff;
+
+  /* Claymorphism Shadows - Light */
+  --shadow-drop: 8px 8px 16px rgba(163, 177, 198, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.8);
+  --shadow-inner: inset 4px 4px 8px rgba(255, 255, 255, 0.9), inset -4px -4px 8px rgba(163, 177, 198, 0.3);
+  --shadow-btn-active: inset 6px 6px 12px rgba(163, 177, 198, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark Mode Palette */
+    --bg-color: #1e1e24;
+    --card-bg: #2b2b36;
+    --text-main: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.05);
+
+    /* Dark Muted Colors */
+    --color-pastel-blue: #334155;
+    --color-pastel-pink: #50313f;
+    --color-pastel-green: #2d4a3e;
+    --color-pastel-yellow: #524b30;
+    --color-pastel-purple: #3b2c52;
+
+    /* Claymorphism Shadows - Dark */
+    --shadow-drop: 8px 8px 16px rgba(0, 0, 0, 0.4), -8px -8px 16px rgba(60, 60, 75, 0.2);
+    --shadow-inner: inset 4px 4px 8px rgba(255, 255, 255, 0.03), inset -4px -4px 8px rgba(0, 0, 0, 0.3);
+    --shadow-btn-active: inset 6px 6px 12px rgba(0, 0, 0, 0.5), inset -6px -6px 12px rgba(255, 255, 255, 0.02);
+  }
+}
+
 @theme {
-  --font-sans: "Inter", system-ui, sans-serif;
-  --color-memphis-yellow: #FFD500;
-  --color-memphis-pink: #FF007F;
-  --color-memphis-blue: #00E5FF;
-  --color-memphis-purple: #9D00FF;
-  --color-memphis-green: #39FF14;
+  --font-sans: var(--font-sans);
 }
 
 /* ─── Base Styles ────────────────────────────────────────────────── */
 body {
   font-family: var(--font-sans);
-  background-color: #f4f4f0;
-  color: #111111;
+  background-color: var(--bg-color);
+  color: var(--text-main);
   min-height: 100vh;
-  /* Fun geometric dot background */
-  background-image: radial-gradient(#111 2px, transparent 2px);
-  background-size: 30px 30px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ─── Memphis Brutalist UI Styles ────────────────────────────────── */
-.memphis-card {
-  background: white;
-  border: 4px solid black;
-  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
-  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+/* ─── Soft Claymorphism UI Styles ────────────────────────────────── */
+.clay-card {
+  background: var(--card-bg);
+  border-radius: 32px;
+  box-shadow: var(--shadow-drop), var(--shadow-inner);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.memphis-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 1);
+.clay-card:hover {
+  transform: translateY(-2px);
 }
 
-.memphis-input {
-  background: white;
-  border: 4px solid black;
-  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+.clay-card-flat {
+  background: var(--card-bg);
+  border-radius: 24px;
+  box-shadow: var(--shadow-drop);
+  border: 1px solid var(--border-color);
 }
 
-.memphis-input:focus-within {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+.clay-input {
+  background: var(--card-bg);
+  border-radius: 24px;
+  box-shadow: var(--shadow-inner);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  transition: box-shadow 0.2s ease;
+}
+
+.clay-input:focus-within {
+  box-shadow: var(--shadow-btn-active);
   outline: none;
 }
 
-.memphis-button {
-  background: var(--color-memphis-yellow);
-  color: black;
-  font-weight: 900;
-  text-transform: uppercase;
-  border: 4px solid black;
-  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
-  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+.clay-btn {
+  background: var(--card-bg);
+  color: var(--text-main);
+  border-radius: 24px;
+  font-weight: 600;
+  box-shadow: var(--shadow-drop), var(--shadow-inner);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  user-select: none;
 }
 
-.memphis-button:hover:not(:disabled) {
-  background: var(--color-memphis-pink);
-  color: white;
-  transform: translate(-2px, -2px);
-  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+.clay-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
 }
 
-.memphis-button:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+.clay-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-btn-active);
 }
 
-.memphis-button:disabled {
-  background: #ccc;
+.clay-btn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
-  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+  box-shadow: var(--shadow-inner);
 }
 
-/* ─── Decorative Elements ────────────────────────────────────────── */
-.shape-circle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 4px solid black;
-  background: var(--color-memphis-blue);
-  box-shadow: 4px 4px 0px 0px black;
+.clay-btn-primary {
+  background: var(--color-pastel-blue);
+  color: var(--text-main);
 }
 
-.shape-triangle {
-  width: 0;
-  height: 0;
-  border-left: 25px solid transparent;
-  border-right: 25px solid transparent;
-  border-bottom: 50px solid var(--color-memphis-pink);
-  filter: drop-shadow(4px 4px 0px black);
+.clay-btn-danger {
+  background: var(--color-pastel-pink);
+  color: var(--text-main);
+}
+
+.clay-pill {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-drop), var(--shadow-inner);
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
 }
 
 /* ─── Animations ─────────────────────────────────────────────────── */
-@keyframes popIn {
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes fadeScaleIn {
   0% {
     opacity: 0;
-    transform: scale(0.8) translateY(20px);
+    transform: scale(0.95) translateY(10px);
   }
-
-  50% {
-    transform: scale(1.05) translateY(-5px);
-  }
-
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
 }
 
-.animate-pop-in {
-  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+.animate-fade-in {
+  animation: fadeScaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* ─── Scrollbar ──────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f4f4f0;
-  border-left: 4px solid black;
+  background: var(--bg-color);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-memphis-pink);
-  border: 4px solid black;
+  background: var(--text-muted);
+  border-radius: 10px;
+  border: 2px solid var(--bg-color);
 }
 
 /* ─── Utilities ──────────────────────────────────────────────────── */

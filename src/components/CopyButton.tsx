@@ -30,25 +30,26 @@ export default function CopyButton({ text, className = "" }: CopyButtonProps) {
   return (
     <button
       onClick={handleCopy}
-      className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-black uppercase border-2 border-black transition-all duration-200 ${copied
-          ? "bg-[#39FF14] text-black shadow-[2px_2px_0_0_#000] translate-x-[2px] translate-y-[2px]"
-          : "bg-white text-black shadow-[4px_4px_0_0_#000] hover:bg-[#FFD500] hover:shadow-[6px_6px_0_0_#000] hover:-translate-x-[2px] hover:-translate-y-[2px]"
-        } ${className}`}
+      className={`clay-btn inline-flex items-center gap-2 px-4 py-2 text-sm transition-all duration-200 ${
+        copied
+          ? "bg-[var(--color-pastel-green)] text-green-900 shadow-[var(--shadow-btn-active)]"
+          : "bg-[var(--card-bg)] text-[var(--text-main)] hover:bg-[var(--color-pastel-blue)]"
+      } ${className}`}
       title={copied ? "Copied!" : "Copy to clipboard"}
     >
       {copied ? (
         <>
-          <svg className="w-4 h-4" stroke="currentColor" strokeWidth={3} fill="none" viewBox="0 0 24 24">
-            <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
+          <svg className="w-4 h-4 text-green-700" stroke="currentColor" strokeWidth={3} fill="none" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
-          COPIED
+          <span className="font-semibold">Copied</span>
         </>
       ) : (
         <>
-          <svg className="w-4 h-4" stroke="currentColor" strokeWidth={2} fill="none" viewBox="0 0 24 24">
-            <path strokeLinecap="square" strokeLinejoin="miter" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          <svg className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-main)] transition-colors" stroke="currentColor" strokeWidth={2} fill="none" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
-          COPY
+          <span className="font-medium">Copy</span>
         </>
       )}
     </button>

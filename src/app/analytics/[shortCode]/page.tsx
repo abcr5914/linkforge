@@ -59,53 +59,55 @@ export default async function AnalyticsPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f4f4f0] p-4 sm:p-8 relative overflow-hidden">
-      {/* Decorative */}
-      <div className="absolute top-10 right-10 shape-circle animate-pop-in pointer-events-none" />
-      <div className="absolute bottom-10 left-10 shape-triangle animate-pop-in pointer-events-none" />
+    <main className="min-h-screen bg-[var(--bg-color)] text-[var(--text-main)] p-4 sm:p-8 relative overflow-hidden transition-colors duration-300">
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-[1400px] mx-auto relative z-10 w-full animate-fade-in">
 
         {/* Header Section */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <div className="bg-white border-4 border-black p-4 shadow-[8px_8px_0_0_#000] transform -rotate-1 animate-pop-in">
-            <h1 className="text-4xl font-black uppercase text-[#FF007F] drop-shadow-[2px_2px_0_#000]">
-              Supercharged Analytics
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
+          <div className="clay-card-flat p-6 border border-[var(--border-color)]">
+            <h1 className="text-3xl font-bold text-[var(--color-pastel-blue)] mb-2" style={{ filter: "brightness(0.8) saturate(1.5)" }}>
+              Analytics Overview
             </h1>
-            <p className="font-bold text-lg text-black mt-1">
-              Link: <span className="bg-[#FFD500] px-1 border-2 border-black">/{link.shortCode}</span>
+            <p className="font-medium text-lg text-[var(--text-muted)] flex items-center gap-2">
+              Link: <span className="clay-pill bg-[var(--color-pastel-yellow)] text-yellow-900 border-yellow-200">/{link.shortCode}</span>
             </p>
           </div>
 
-          <Link href="/" className="memphis-button px-6 py-3 text-lg shrink-0">
-            ← BACK TO DASHBOARD
+          <Link href="/" className="clay-btn px-6 py-3 text-sm shrink-0 flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
           </Link>
         </div>
 
         {/* Top summary cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 animate-pop-in" style={{ animationDelay: '0.1s' }}>
-          <div className="memphis-card p-6 flex flex-col items-center justify-center bg-[#FFD500]">
-            <span className="text-sm font-black uppercase border-2 border-black bg-white px-2 py-1 transform -rotate-2">Total Clicks</span>
-            <span className="text-6xl font-black mt-2 drop-shadow-[2px_2px_0_#000] text-black">{clicks.length}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="clay-card p-6 flex flex-col items-start justify-center bg-[var(--card-bg)]">
+            <span className="text-sm font-semibold text-[var(--text-muted)] mb-1">Total Clicks</span>
+            <span className="text-5xl font-bold text-[var(--color-pastel-blue)]" style={{ filter: "brightness(0.8) saturate(1.5)" }}>
+              {clicks.length}
+            </span>
           </div>
 
-          <div className="memphis-card p-6 flex flex-col items-center justify-center bg-[#00E5FF]">
-            <span className="text-sm font-black uppercase border-2 border-black bg-white px-2 py-1 transform rotate-2">Platform Target</span>
-            <span className="text-3xl font-black mt-2 drop-shadow-[2px_2px_0_#000] text-black uppercase">
+          <div className="clay-card p-6 flex flex-col items-start justify-center bg-[var(--card-bg)]">
+            <span className="text-sm font-semibold text-[var(--text-muted)] mb-1">Platform Target</span>
+            <span className="text-2xl font-bold text-[var(--color-pastel-pink)] uppercase" style={{ filter: "brightness(0.9) saturate(1.5)" }}>
               {link.targetApp || "Web Link"}
             </span>
           </div>
 
-          <div className="memphis-card p-6 flex flex-col items-center justify-center bg-[#39FF14]">
-            <span className="text-sm font-black uppercase border-2 border-black bg-white px-2 py-1 transform -rotate-2">Created</span>
-            <span className="text-2xl font-black mt-2 drop-shadow-[2px_2px_0_#000] text-black uppercase">
-              {new Date(link.createdAt).toLocaleDateString()}
+          <div className="clay-card p-6 flex flex-col items-start justify-center bg-[var(--card-bg)] sm:col-span-2 lg:col-span-1">
+            <span className="text-sm font-semibold text-[var(--text-muted)] mb-1">Created Date</span>
+            <span className="text-2xl font-bold text-[var(--color-pastel-green)]" style={{ filter: "brightness(0.7) saturate(2)" }}>
+              {new Date(link.createdAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
             </span>
           </div>
         </div>
 
         {/* Charts */}
-        <div className="animate-pop-in" style={{ animationDelay: '0.2s' }}>
+        <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <AnalyticsDashboard timeData={timeData} osData={osData} />
         </div>
 
