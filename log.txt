@@ -1,0 +1,29 @@
+commit 989bdd89f6102d51fc85f6adf825d0602c596715
+Author: Abhinava Changa Ramesh <abhinava.ananth@gmail.com>
+Date:   Sat Apr 11 18:04:56 2026 +0530
+
+    fix issue 3
+
+commit 5c83cd87b49aaf8f19ec710bd3558cb35fb1ac40
+Author: Abhinava Changa Ramesh <abhinava.ananth@gmail.com>
+Date:   Sat Apr 11 16:57:32 2026 +0530
+
+    fix issue 2
+
+commit 598364deadcf4507e28ae023aff8bae09b9a4bfd
+Author: Abhinava Changa Ramesh <abhinava.ananth@gmail.com>
+Date:   Sat Apr 11 14:02:46 2026 +0530
+
+    fix issues
+
+commit d719c67d3cde435b5f421a96b78a2f2eb6b34bda
+Author: Abhinava Changa Ramesh <abhinava.ananth@gmail.com>
+Date:   Sat Apr 11 13:54:52 2026 +0530
+
+    ui changed to claymorph
+
+commit 562b452bb74b3fecf879c61ae64bc162ee080685
+Author: Abhinava Changa Ramesh <abhinava.ananth@gmail.com>
+Date:   Sat Apr 11 13:27:20 2026 +0530
+
+    copyprops removed

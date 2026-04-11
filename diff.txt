@@ -1,0 +1,241 @@
+diff --git a/src/app/analytics/[shortCode]/page.tsx b/src/app/analytics/[shortCode]/page.tsx
+index d21b524..934ab46 100644
+--- a/src/app/analytics/[shortCode]/page.tsx
++++ b/src/app/analytics/[shortCode]/page.tsx
+@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
+ import AnalyticsDashboard from "./AnalyticsDashboard";
+ import Link from "next/link";
+ 
++export const dynamic = "force-dynamic";
++
+ interface PageProps {
+   params: Promise<{ shortCode: string }>;
+ }
+diff --git a/src/app/api/links/route.ts b/src/app/api/links/route.ts
+index 6f7cbbc..9df4635 100644
+--- a/src/app/api/links/route.ts
++++ b/src/app/api/links/route.ts
+@@ -15,6 +15,8 @@ import { validateUrl } from "@/lib/url-validation";
+ import { detectPlatform } from "@/lib/platform-detect";
+ import { scrapeOgTags } from "@/lib/og-scraper";
+ 
++export const dynamic = "force-dynamic";
++
+ // ---------------------------------------------------------------------------
+ // POST /api/links — Create a new short link
+ // ---------------------------------------------------------------------------
+diff --git a/src/app/api/logout/route.ts b/src/app/api/logout/route.ts
+new file mode 100644
+index 0000000..9e5d9d2
+--- /dev/null
++++ b/src/app/api/logout/route.ts
+@@ -0,0 +1,8 @@
++import { cookies } from "next/headers";
++import { NextResponse } from "next/server";
++
++export async function POST() {
++  const cookieStore = await cookies();
++  cookieStore.delete("adminAuth");
++  return NextResponse.json({ success: true });
++}
+diff --git a/src/app/globals.css b/src/app/globals.css
+index 02fec0e..d321ff9 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -6,7 +6,7 @@
+ /* ─── Custom Theme Variables ─────────────────────────────────────── */
+ :root {
+   --font-sans: "Outfit", system-ui, sans-serif;
+-  
++
+   /* Light Mode Palette */
+   --bg-color: #f0f3f8;
+   --card-bg: #e2e8f0;
+@@ -149,9 +149,11 @@ body {
+   0% {
+     transform: translateY(0px);
+   }
++
+   50% {
+     transform: translateY(-6px);
+   }
++
+   100% {
+     transform: translateY(0px);
+   }
+@@ -166,6 +168,7 @@ body {
+     opacity: 0;
+     transform: scale(0.95) translateY(10px);
+   }
++
+   100% {
+     opacity: 1;
+     transform: scale(1) translateY(0);
+diff --git a/src/app/login/page.tsx b/src/app/login/page.tsx
+index cc1716c..44f411c 100644
+--- a/src/app/login/page.tsx
++++ b/src/app/login/page.tsx
+@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
+ export default async function LoginPage() {
+   async function performLogin(formData: FormData) {
+     "use server";
+-    
++
+     const user = formData.get("username");
+     const pass = formData.get("password");
+ 
+@@ -13,50 +13,48 @@ export default async function LoginPage() {
+       cookieStore.set("adminAuth", "authenticated", { path: "/", secure: true, httpOnly: true });
+       redirect("/");
+     }
+-    // Simple way to show error is redirecting with query param but we'll re-render simply
+-    // Wait, since Next.js Server Actions don't rerender page with local state without useActionState, 
+-    // redirecting with ?error=1 is easiest.
++    // Simple way to show error is redirecting with query param
+     redirect("/login?error=1");
+   }
+ 
+   return (
+-    <main className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#f4f4f0]">
+-      {/* Decorative background shapes */}
+-      <div className="absolute top-20 left-20 shape-circle animate-pop-in" style={{ animationDelay: "0.1s" }} />
+-      <div className="absolute bottom-20 right-20 shape-triangle animate-pop-in" style={{ animationDelay: "0.2s" }} />
+-      
+-      <div className="memphis-card p-10 max-w-md w-full relative z-10 animate-pop-in transform rotate-1">
+-        <h1 className="text-4xl font-black uppercase text-center mb-6 tracking-tight drop-shadow-[2px_2px_0_rgba(0,0,0,1)] text-[#FF007F]">
++    <main className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[var(--bg-color)] transition-colors duration-300">
++
++      <div className="clay-card p-10 max-w-md w-full relative z-10 animate-fade-in bg-[var(--card-bg)] border border-[var(--border-color)]">
++        <h1 className="text-4xl font-bold uppercase text-center mb-8 tracking-tight text-[var(--color-pastel-blue)]" style={{ filter: "brightness(0.8) saturate(1.5)" }}>
+           Admin Login
+         </h1>
+-        
++
+         <form action={performLogin} className="flex flex-col gap-6">
+           <div className="flex flex-col gap-2">
+-            <label className="font-bold text-lg uppercase bg-[#FFD500] px-2 py-1 self-start border-2 border-black transform -rotate-2">
++            <label className="font-semibold text-sm uppercase text-[var(--text-muted)] ml-2">
+               Username
+             </label>
+-            <input 
++            <input
+               name="username"
+-              type="text" 
+-              className="memphis-input px-4 py-3 text-lg font-bold w-full"
++              type="text"
++              className="clay-input px-4 py-3 text-lg font-medium w-full text-[var(--text-main)] bg-[var(--bg-color)]"
+               required
+             />
+           </div>
+ 
+           <div className="flex flex-col gap-2">
+-            <label className="font-bold text-lg uppercase bg-[#00E5FF] px-2 py-1 self-start border-2 border-black transform rotate-2">
++            <label className="font-semibold text-sm uppercase text-[var(--text-muted)] ml-2">
+               Password
+             </label>
+-            <input 
++            <input
+               name="password"
+-              type="password" 
+-              className="memphis-input px-4 py-3 text-lg font-bold w-full"
++              type="password"
++              className="clay-input px-4 py-3 text-lg font-medium w-full text-[var(--text-main)] bg-[var(--bg-color)]"
+               required
+             />
+           </div>
+ 
+-          <button type="submit" className="memphis-button mt-4 py-4 text-xl">
+-            LET'S GO 🚀
++          <button type="submit" className="clay-btn clay-btn-primary mt-6 py-4 text-xl flex justify-center items-center gap-2">
++            <span>Login</span>
++            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
++              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
++            </svg>
+           </button>
+         </form>
+       </div>
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index a3a7425..f86bdf7 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -59,8 +59,14 @@ export default function DashboardPage() {
+       });
+ 
+       if (!res.ok) {
+-        const errData = await res.json();
+-        throw new Error(errData.error ?? "Failed to create link");
++        let errorMessage = "Failed to create link";
++        try { // Protect against Vercel's 504 HTML response
++          const errData = await res.json();
++          errorMessage = errData.error ?? errorMessage;
++        } catch {
++          errorMessage = `Server Error: ${res.status} ${res.statusText}. Please try again later.`;
++        }
++        throw new Error(errorMessage);
+       }
+ 
+       const newLink = await res.json();
+@@ -92,9 +98,30 @@ export default function DashboardPage() {
+     }
+   };
+ 
++  const handleLogout = async () => {
++    try {
++      await fetch("/api/logout", { method: "POST" });
++      window.location.href = "/login";
++    } catch (e) {
++      console.error(e);
++    }
++  };
++
+   return (
+     <main className="min-h-screen flex flex-col relative overflow-hidden transition-colors duration-300">
+       
++      {/* Top right subtle logout */}
++      <button 
++        onClick={handleLogout}
++        className="absolute top-4 right-4 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors z-50 flex items-center gap-1"
++        title="Logout"
++      >
++        <span>Logout</span>
++        <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
++          <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
++        </svg>
++      </button>
++
+       {/* ─── Hero Section ──────────────────────────────────────── */}
+       <section className="relative pt-20 pb-12 px-4 sm:px-6 lg:px-8 z-10 w-full mb-8">
+         <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
+diff --git a/src/lib/og-scraper.ts b/src/lib/og-scraper.ts
+index a75b621..43305d5 100644
+--- a/src/lib/og-scraper.ts
++++ b/src/lib/og-scraper.ts
+@@ -20,19 +20,24 @@ export interface OgData {
+  */
+ export async function scrapeOgTags(url: string): Promise<OgData> {
+   try {
+-    const { result } = await ogs({
++    // Implement an aggressive hard timeout to prevent serverless hanging
++    const timeoutPromise = new Promise<{ result: any }>((_, reject) =>
++      setTimeout(() => reject(new Error("OG Scrape Timeout")), 3000)
++    );
++
++    const ogsPromise = ogs({
+       url,
+-      timeout: 8000, // 8-second timeout to avoid blocking too long
++      timeout: 3000,
+       fetchOptions: {
+         headers: {
+-          // Some sites block requests without a browser-like User-Agent
+           "User-Agent":
+             "Mozilla/5.0 (compatible; DeepLinkBot/1.0; +https://deeplink.app)",
+         },
+       },
+     });
+ 
+-    // open-graph-scraper returns ogImage as an array of objects
++    const { result } = await Promise.race([ogsPromise, timeoutPromise]);
++
+     const imageUrl =
+       result.ogImage && result.ogImage.length > 0
+         ? result.ogImage[0].url

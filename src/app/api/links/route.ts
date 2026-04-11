@@ -2,8 +2,8 @@
  * API Route: /api/links
  *
  * POST - Creates a new short link from a given URL.
- *        Validates the URL, detects the platform, scrapes OG tags,
- *        generates a unique short code, and saves everything to the DB.
+ * Validates the URL, detects the platform, scrapes OG tags,
+ * generates a unique short code, and saves everything to the DB.
  *
  * GET  - Returns all links with their click counts for the dashboard.
  */
@@ -46,8 +46,19 @@ export async function POST(request: NextRequest) {
     // 2. Detect the target platform
     const targetApp = detectPlatform(trimmedUrl);
 
-    // 3. Scrape OG tags (done at creation time, not at redirect time)
-    const ogData = await scrapeOgTags(trimmedUrl);
+    // 3. Scrape OG tags (with a strict 3-second timeout to bypass Node DNS hangs)
+    let ogData = { ogTitle: null, ogDescription: null, ogImage: null };
+    try {
+      ogData = await Promise.race([
+        scrapeOgTags(trimmedUrl),
+        new Promise<any>((_, reject) =>
+          setTimeout(() => reject(new Error("Scraper timeout")), 3000)
+        )
+      ]);
+    } catch (scraperError) {
+      console.warn("[POST /api/links] Scraper timed out or failed, proceeding without OG tags.");
+      // We catch the error but do NOT stop the function. The link will still generate.
+    }
 
     // 4. Generate a unique short code (8 chars for a good balance)
     const shortCode = nanoid(8);

@@ -20,23 +20,17 @@ export interface OgData {
  */
 export async function scrapeOgTags(url: string): Promise<OgData> {
   try {
-    // Implement an aggressive hard timeout to prevent serverless hanging
-    const timeoutPromise = new Promise<{ result: any }>((_, reject) =>
-      setTimeout(() => reject(new Error("OG Scrape Timeout")), 3000)
-    );
-
-    const ogsPromise = ogs({
+    const { result } = await ogs({
       url,
       timeout: 3000,
       fetchOptions: {
+        signal: AbortSignal.timeout(3000), // Hard native abort signal for the underlying fetch
         headers: {
           "User-Agent":
             "Mozilla/5.0 (compatible; DeepLinkBot/1.0; +https://deeplink.app)",
         },
       },
     });
-
-    const { result } = await Promise.race([ogsPromise, timeoutPromise]);
 
     const imageUrl =
       result.ogImage && result.ogImage.length > 0
