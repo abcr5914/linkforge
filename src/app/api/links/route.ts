@@ -15,6 +15,8 @@ import { validateUrl } from "@/lib/url-validation";
 import { detectPlatform } from "@/lib/platform-detect";
 import { scrapeOgTags } from "@/lib/og-scraper";
 
+export const dynamic = "force-dynamic";
+
 // ---------------------------------------------------------------------------
 // POST /api/links — Create a new short link
 // ---------------------------------------------------------------------------

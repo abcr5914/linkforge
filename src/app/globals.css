@@ -6,7 +6,7 @@
 /* ─── Custom Theme Variables ─────────────────────────────────────── */
 :root {
   --font-sans: "Outfit", system-ui, sans-serif;
-  
+
   /* Light Mode Palette */
   --bg-color: #f0f3f8;
   --card-bg: #e2e8f0;
@@ -149,9 +149,11 @@ body {
   0% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-6px);
   }
+
   100% {
     transform: translateY(0px);
   }
@@ -166,6 +168,7 @@ body {
     opacity: 0;
     transform: scale(0.95) translateY(10px);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
