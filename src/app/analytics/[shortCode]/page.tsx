@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import AnalyticsDashboard from "./AnalyticsDashboard";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ shortCode: string }>;
 }
