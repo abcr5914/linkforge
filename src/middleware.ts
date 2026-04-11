@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }
-  
+
   // Protect API dashboard routes
   if (pathname.startsWith('/api/links')) {
     const authCookie = request.cookies.get('adminAuth')?.value;
@@ -27,6 +27,6 @@ export const config = {
   matcher: [
     '/',
     '/analytics/:path*',
-    '/api/links',
+    '/api/links/:path*',
   ],
 };

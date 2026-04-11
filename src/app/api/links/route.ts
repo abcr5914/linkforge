@@ -2,8 +2,8 @@
  * API Route: /api/links
  *
  * POST - Creates a new short link from a given URL.
- * Validates the URL, detects the platform, scrapes OG tags,
- * generates a unique short code, and saves everything to the DB.
+ *        Validates the URL, detects the platform, scrapes OG tags,
+ *        generates a unique short code, and saves everything to the DB.
  *
  * GET  - Returns all links with their click counts for the dashboard.
  */
@@ -16,6 +16,7 @@ import { detectPlatform } from "@/lib/platform-detect";
 import { scrapeOgTags } from "@/lib/og-scraper";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 30; // Allow 30s for Neon cold start + OG scraping
 
 // ---------------------------------------------------------------------------
 // POST /api/links — Create a new short link
@@ -46,24 +47,24 @@ export async function POST(request: NextRequest) {
     // 2. Detect the target platform
     const targetApp = detectPlatform(trimmedUrl);
 
-    // 3. Scrape OG tags (with a strict 3-second timeout to bypass Node DNS hangs)
-    let ogData = { ogTitle: null, ogDescription: null, ogImage: null };
+    // 3. Scrape OG tags — wrapped in a strict timeout so it NEVER blocks
+    //    link creation. If it fails or times out, we proceed with null values.
+    let ogData: { ogTitle: string | null; ogDescription: string | null; ogImage: string | null } = {
+      ogTitle: null,
+      ogDescription: null,
+      ogImage: null,
+    };
     try {
-      ogData = await Promise.race([
-        scrapeOgTags(trimmedUrl),
-        new Promise<any>((_, reject) =>
-          setTimeout(() => reject(new Error("Scraper timeout")), 3000)
-        )
-      ]);
+      ogData = await scrapeOgTags(trimmedUrl);
     } catch (scraperError) {
-      console.warn("[POST /api/links] Scraper timed out or failed, proceeding without OG tags.");
-      // We catch the error but do NOT stop the function. The link will still generate.
+      console.warn("[POST /api/links] OG scraper failed, proceeding without OG tags:", scraperError);
     }
 
     // 4. Generate a unique short code (8 chars for a good balance)
     const shortCode = nanoid(8);
 
     // 5. Persist to the database
+    console.log("[POST /api/links] Attempting DB write for:", trimmedUrl);
     const link = await prisma.link.create({
       data: {
         originalUrl: trimmedUrl,
@@ -74,12 +75,13 @@ export async function POST(request: NextRequest) {
         ogImage: ogData.ogImage,
       },
     });
+    console.log("[POST /api/links] Successfully created link:", link.shortCode);
 
     return NextResponse.json(link, { status: 201 });
   } catch (error) {
     console.error("[POST /api/links] Error:", error);
     return NextResponse.json(
-      { error: "Failed to create short link." },
+      { error: "Failed to create short link. Please try again." },
       { status: 500 }
     );
   }
@@ -90,6 +92,7 @@ export async function POST(request: NextRequest) {
 // ---------------------------------------------------------------------------
 export async function GET() {
   try {
+    console.log("[GET /api/links] Fetching all links...");
     const links = await prisma.link.findMany({
       orderBy: { createdAt: "desc" },
       include: {
@@ -98,6 +101,7 @@ export async function GET() {
         },
       },
     });
+    console.log("[GET /api/links] Found", links.length, "links");
 
     return NextResponse.json(links);
   } catch (error) {
