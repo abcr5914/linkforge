@@ -1,15 +1,6 @@
-/**
- * LinkResultCard Component
- *
- * Displays a generated short link with:
- * - The short URL and copy button
- * - Detected platform badge
- * - OG preview (title, description, image)
- * - Inline analytics
- */
-
 "use client";
 
+import Link from "next/link";
 import CopyButton from "./CopyButton";
 import AnalyticsCard from "./AnalyticsCard";
 import { getPlatformDisplayName } from "@/lib/platform-detect";
@@ -34,79 +25,87 @@ interface LinkResultCardProps {
 export default function LinkResultCard({ link, baseUrl }: LinkResultCardProps) {
   const shortUrl = `${baseUrl}/${link.shortCode}`;
 
-  /** Platform badge colors */
   const platformColors: Record<string, string> = {
-    youtube: "bg-red-500/20 text-red-400 border-red-500/30",
-    spotify: "bg-green-500/20 text-green-400 border-green-500/30",
-    instagram: "bg-pink-500/20 text-pink-400 border-pink-500/30",
-    twitter: "bg-sky-500/20 text-sky-400 border-sky-500/30",
-    reddit: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-    linkedin: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    facebook: "bg-blue-600/20 text-blue-400 border-blue-600/30",
-    tiktok: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-    pinterest: "bg-red-600/20 text-red-300 border-red-600/30",
+    youtube: "bg-[#FF0000] text-white",
+    spotify: "bg-[#1DB954] text-black",
+    instagram: "bg-[#E1306C] text-white",
+    twitter: "bg-[#1DA1F2] text-white",
+    reddit: "bg-[#FF4500] text-white",
+    linkedin: "bg-[#0A66C2] text-white",
+    facebook: "bg-[#1877F2] text-white",
+    tiktok: "bg-[#000000] text-white",
+    pinterest: "bg-[#E60023] text-white",
   };
 
   const badgeColor = link.targetApp
-    ? platformColors[link.targetApp] ?? "bg-gray-500/20 text-gray-400 border-gray-500/30"
-    : "bg-gray-500/20 text-gray-400 border-gray-500/30";
+    ? platformColors[link.targetApp] ?? "bg-[#e0e0e0] text-black"
+    : "bg-[#e0e0e0] text-black";
 
   return (
-    <div className="glass-card p-5 rounded-2xl space-y-4 animate-slide-up">
-      {/* Header: Short URL + Copy + Platform badge */}
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="flex-1 min-w-0">
-          {/* Platform badge */}
-          <div className="flex items-center gap-2 mb-2">
-            <span className={`px-2.5 py-1 text-xs font-semibold rounded-lg border ${badgeColor}`}>
+    <div className="memphis-card p-6 flex flex-col gap-4 animate-pop-in relative z-20">
+      
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex-1 min-w-0 flex flex-col gap-2">
+          
+          <div className="flex items-center gap-3">
+            <span className={`px-3 py-1 text-xs font-black uppercase border-2 border-black transform rotate-1 ${badgeColor}`}>
               {getPlatformDisplayName(link.targetApp)}
             </span>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs font-bold bg-[#39FF14] px-2 py-1 border-2 border-black">
               {new Date(link.createdAt).toLocaleDateString()}
             </span>
           </div>
 
-          {/* Short URL */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
             <a
               href={shortUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-indigo-400 hover:text-indigo-300 font-mono text-sm truncate transition-colors"
+              className="text-black bg-[#00E5FF] px-3 py-1 font-mono text-lg font-bold border-2 border-black truncate hover:bg-[#FFD500] transition-colors"
             >
               {shortUrl}
             </a>
             <CopyButton text={shortUrl} />
           </div>
 
-          {/* Original URL (truncated) */}
-          <p className="text-xs text-gray-500 mt-1 truncate" title={link.originalUrl}>
+          <p className="text-sm font-bold text-gray-700 truncate" title={link.originalUrl}>
             → {link.originalUrl}
           </p>
         </div>
+
+        {/* Analytics Link Button for each link */}
+        <Link 
+          href={`/analytics/${link.shortCode}`}
+          className="shrink-0 block mt-2 sm:mt-0"
+        >
+          <div className="memphis-button text-sm px-6 py-3 cursor-pointer text-center bg-[#FF007F] text-white">
+            Supercharged Analytics 🚀
+          </div>
+        </Link>
+
       </div>
 
       {/* OG Preview */}
       {(link.ogTitle || link.ogImage) && (
-        <div className="flex gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+        <div className="flex gap-4 p-4 bg-[#f4f4f0] border-4 border-black border-dashed mt-2 transform -rotate-1">
           {link.ogImage && (
             <img
               src={link.ogImage}
               alt={link.ogTitle ?? "Preview"}
-              className="w-20 h-20 object-cover rounded-lg shrink-0"
+              className="w-24 h-24 object-cover border-4 border-black shrink-0 shadow-[4px_4px_0_0_#000]"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}
             />
           )}
-          <div className="min-w-0">
+          <div className="flex flex-col justify-center min-w-0">
             {link.ogTitle && (
-              <p className="text-sm font-medium text-gray-200 truncate">
+              <p className="text-lg font-black text-black truncate underline decoration-[#FFD500] decoration-4 text-underline-offset-4">
                 {link.ogTitle}
               </p>
             )}
             {link.ogDescription && (
-              <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+              <p className="text-sm font-semibold text-gray-800 mt-2 line-clamp-2">
                 {link.ogDescription}
               </p>
             )}
@@ -114,8 +113,11 @@ export default function LinkResultCard({ link, baseUrl }: LinkResultCardProps) {
         </div>
       )}
 
-      {/* Analytics */}
-      <AnalyticsCard shortCode={link.shortCode} />
+      {/* Simple Inline Analytics (old view fallback if wanted, or hidden) */}
+      <div className="mt-2 text-sm font-bold text-black flex items-center gap-2">
+        <span className="bg-[#FFD500] px-2 py-1 border-2 border-black">Clicks: {link._count?.clicks ?? 0}</span>
+      </div>
+
     </div>
   );
 }
