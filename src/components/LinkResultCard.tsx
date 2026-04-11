@@ -43,10 +43,10 @@ export default function LinkResultCard({ link, baseUrl }: LinkResultCardProps) {
 
   return (
     <div className="memphis-card p-6 flex flex-col gap-4 animate-pop-in relative z-20">
-      
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex-1 min-w-0 flex flex-col gap-2">
-          
+
           <div className="flex items-center gap-3">
             <span className={`px-3 py-1 text-xs font-black uppercase border-2 border-black transform rotate-1 ${badgeColor}`}>
               {getPlatformDisplayName(link.targetApp)}
@@ -74,7 +74,7 @@ export default function LinkResultCard({ link, baseUrl }: LinkResultCardProps) {
         </div>
 
         {/* Analytics Link Button for each link */}
-        <Link 
+        <Link
           href={`/analytics/${link.shortCode}`}
           className="shrink-0 block mt-2 sm:mt-0"
         >

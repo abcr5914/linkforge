@@ -27,7 +27,7 @@ export default async function AnalyticsPage({ params }: PageProps) {
 
   // Pre-process data to pass down to client charts
   const clicks = link.clicks;
-  
+
   // Aggregate OS data
   const osDataMap: Record<string, number> = {};
   clicks.forEach(c => {
@@ -38,13 +38,13 @@ export default async function AnalyticsPage({ params }: PageProps) {
   // Aggregate clicks over time (group by day)
   const timeDataMap: Record<string, number> = {};
   clicks.forEach(c => {
-    const dateStr = new Date(c.clickedAt).toLocaleDateString(undefined, { 
-      month: 'short', 
-      day: 'numeric' 
+    const dateStr = new Date(c.clickedAt).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric'
     });
     timeDataMap[dateStr] = (timeDataMap[dateStr] || 0) + 1;
   });
-  
+
   // Format for Recharts
   const timeData = Object.entries(timeDataMap).map(([date, count]) => ({
     date,
@@ -64,9 +64,9 @@ export default async function AnalyticsPage({ params }: PageProps) {
       {/* Decorative */}
       <div className="absolute top-10 right-10 shape-circle animate-pop-in pointer-events-none" />
       <div className="absolute bottom-10 left-10 shape-triangle animate-pop-in pointer-events-none" />
-      
+
       <div className="max-w-5xl mx-auto relative z-10">
-        
+
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div className="bg-white border-4 border-black p-4 shadow-[8px_8px_0_0_#000] transform -rotate-1 animate-pop-in">

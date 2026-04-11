@@ -30,11 +30,10 @@ export default function CopyButton({ text, className = "" }: CopyButtonProps) {
   return (
     <button
       onClick={handleCopy}
-      className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-black uppercase border-2 border-black transition-all duration-200 ${
-        copied
+      className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-black uppercase border-2 border-black transition-all duration-200 ${copied
           ? "bg-[#39FF14] text-black shadow-[2px_2px_0_0_#000] translate-x-[2px] translate-y-[2px]"
           : "bg-white text-black shadow-[4px_4px_0_0_#000] hover:bg-[#FFD500] hover:shadow-[6px_6px_0_0_#000] hover:-translate-x-[2px] hover:-translate-y-[2px]"
-      } ${className}`}
+        } ${className}`}
       title={copied ? "Copied!" : "Copy to clipboard"}
     >
       {copied ? (

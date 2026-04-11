@@ -62,9 +62,8 @@ export default function LinkInputBox({ onSubmit, isLoading }: LinkInputBoxProps)
       <div className="memphis-input p-2 flex flex-col sm:flex-row items-center gap-4 transition-all">
         {detectedPlatform && (
           <span
-            className={`shrink-0 px-4 py-2 text-sm font-black uppercase border-4 border-black shadow-[4px_4px_0_0_#000] transform -rotate-2 ${
-              platformColors[detectedPlatform] ?? "bg-gray-300 text-black"
-            }`}
+            className={`shrink-0 px-4 py-2 text-sm font-black uppercase border-4 border-black shadow-[4px_4px_0_0_#000] transform -rotate-2 ${platformColors[detectedPlatform] ?? "bg-gray-300 text-black"
+              }`}
           >
             {getPlatformDisplayName(detectedPlatform)}
           </span>
