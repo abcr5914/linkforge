@@ -59,8 +59,14 @@ export default function DashboardPage() {
       });
 
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error ?? "Failed to create link");
+        let errorMessage = "Failed to create link";
+        try { // Protect against Vercel's 504 HTML response
+          const errData = await res.json();
+          errorMessage = errData.error ?? errorMessage;
+        } catch {
+          errorMessage = `Server Error: ${res.status} ${res.statusText}. Please try again later.`;
+        }
+        throw new Error(errorMessage);
       }
 
       const newLink = await res.json();
@@ -92,9 +98,30 @@ export default function DashboardPage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", { method: "POST" });
+      window.location.href = "/login";
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <main className="min-h-screen flex flex-col relative overflow-hidden transition-colors duration-300">
       
+      {/* Top right subtle logout */}
+      <button 
+        onClick={handleLogout}
+        className="absolute top-4 right-4 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors z-50 flex items-center gap-1"
+        title="Logout"
+      >
+        <span>Logout</span>
+        <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+      </button>
+
       {/* ─── Hero Section ──────────────────────────────────────── */}
       <section className="relative pt-20 pb-12 px-4 sm:px-6 lg:px-8 z-10 w-full mb-8">
         <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
