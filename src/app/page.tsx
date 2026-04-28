@@ -1,6 +1,5 @@
 /**
- * Dashboard Page (Home)
- * Claymorphism Style
+ * Dashboard — Clean, minimal
  */
 
 "use client";
@@ -50,17 +49,15 @@ export default function DashboardPage() {
   const handleCreateLink = async (url: string) => {
     setIsLoading(true);
     setError(null);
-
     try {
       const res = await fetch("/api/links", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
-
       if (!res.ok) {
         let errorMessage = "Failed to create link";
-        try { // Protect against Vercel's 504 HTML response
+        try {
           const errData = await res.json();
           errorMessage = errData.error ?? errorMessage;
         } catch {
@@ -68,7 +65,6 @@ export default function DashboardPage() {
         }
         throw new Error(errorMessage);
       }
-
       const newLink = await res.json();
       setLinks((prev) => [newLink, ...prev]);
     } catch (err) {
@@ -79,22 +75,15 @@ export default function DashboardPage() {
   };
 
   const handleDeleteLink = async (id: string) => {
-    const isConfirmed = window.confirm("Are you sure you want to remove this link? All analytics will be permanently deleted.");
+    const isConfirmed = window.confirm("Remove this link? Analytics will be permanently deleted.");
     if (!isConfirmed) return;
-
     try {
-      const res = await fetch(`/api/links/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to delete link");
-      }
-
+      const res = await fetch(`/api/links/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete");
       setLinks((prev) => prev.filter((l) => l.id !== id));
     } catch (err) {
       console.error(err);
-      alert("Failed to delete the link. Please try again later.");
+      alert("Failed to delete. Please try again.");
     }
   };
 
@@ -108,73 +97,63 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col relative overflow-hidden transition-colors duration-300">
-      
-      {/* Top right subtle logout */}
-      <button 
-        onClick={handleLogout}
-        className="absolute top-4 right-4 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors z-50 flex items-center gap-1"
-        title="Logout"
-      >
-        <span>Logout</span>
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-      </button>
+    <main className="min-h-screen flex flex-col bg-[var(--bg)]">
 
-      {/* ─── Hero Section ──────────────────────────────────────── */}
-      <section className="relative pt-20 pb-12 px-4 sm:px-6 lg:px-8 z-10 w-full mb-8">
-        <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
-          
-          <div className="inline-flex items-center gap-2 px-6 py-2 clay-pill mx-auto text-[var(--color-pastel-blue)]">
-            <span className="text-xl animate-float inline-block">✨</span>
-            <span className="text-sm font-bold uppercase tracking-wider text-[var(--text-main)]">
-              Welcome to linkforge
-            </span>
+      {/* Nav */}
+      <header className="w-full px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-[var(--accent)] flex items-center justify-center">
+            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.654a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364L4.34 8.934" />
+            </svg>
           </div>
+          <span className="text-sm font-bold text-[var(--text-1)]" style={{ fontFamily: "var(--font-heading)" }}>
+            LinkForge
+          </span>
+        </div>
+        <button onClick={handleLogout} className="btn btn-ghost text-xs px-3 py-1.5">
+          Logout
+        </button>
+      </header>
 
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[var(--text-main)] leading-tight">
-            Create smart, <span className="text-[var(--text-muted)] italic font-medium">native</span> <br />
-            app links
-          </h1>
+      {/* Hero */}
+      <section className="pt-14 pb-10 px-6 text-center fade-up">
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-[var(--text-1)] leading-[1.1] mb-4" style={{ fontFamily: "var(--font-heading)" }}>
+          Create smart,{" "}
+          <span className="text-gradient">native</span>
+          <br />
+          app links
+        </h1>
+        <p className="text-base text-[var(--text-2)] max-w-md mx-auto leading-relaxed mb-8">
+          Paste any app URL. Get a short link that opens the native app on mobile.
+        </p>
 
-          <p className="text-lg md:text-xl text-[var(--text-muted)] max-w-2xl mx-auto leading-relaxed">
-            Convert any app URL — YouTube, Spotify, Instagram — into a single smart short link that forces the native app to open on mobile devices.
-          </p>
-
-          {/* ─── Input Box ───────────────────────────────────── */}
-          <div className="max-w-2xl mx-auto pt-6">
-            <LinkInputBox onSubmit={handleCreateLink} isLoading={isLoading} />
-            
-            {/* Error message */}
-            {error && (
-              <div className="mt-6 p-4 clay-card bg-[var(--color-pastel-pink)] text-red-900 font-semibold text-sm animate-fade-in break-words">
-                Oops: {error}
-              </div>
-            )}
-          </div>
+        <div className="max-w-xl mx-auto">
+          <LinkInputBox onSubmit={handleCreateLink} isLoading={isLoading} />
+          {error && (
+            <div className="mt-4 p-3 rounded-xl bg-[var(--danger-light)] text-[var(--danger)] text-sm font-medium fade-in break-words">
+              {error}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* ─── Links List Section ────────────────────────────────── */}
-      <section className="flex-1 px-4 sm:px-6 lg:px-12 xl:px-16 pb-20 z-10 w-full animate-fade-in" style={{ animationDelay: '0.2s' }}>
-        <div className="max-w-[1400px] mx-auto w-full">
-          
+      {/* Links */}
+      <section className="flex-1 px-4 sm:px-6 lg:px-12 pb-20 fade-up d2">
+        <div className="max-w-[1300px] mx-auto">
+
           {links.length > 0 && (
-            <div className="mb-8 flex items-center justify-between pb-4 border-b border-[var(--border-color)]">
-              <h2 className="text-2xl font-bold text-[var(--text-main)] flex items-center gap-3">
-                Your Connections
-                <span className="clay-pill bg-[var(--color-pastel-blue)] text-xs text-[var(--text-main)] px-3 py-1">
-                  {links.length}
-                </span>
+            <div className="mb-5 flex items-center gap-3 pb-3 border-b border-[var(--border)]">
+              <h2 className="text-base font-bold text-[var(--text-1)]" style={{ fontFamily: "var(--font-heading)" }}>
+                Your Links
               </h2>
+              <span className="pill text-[10px]">{links.length}</span>
             </div>
           )}
 
-          {/* Render in a responsive grid layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {links.map((link) => (
-              <div key={link.id} className="h-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {links.map((link, i) => (
+              <div key={link.id} className="fade-up" style={{ animationDelay: `${Math.min(i * 0.04, 0.25)}s` }}>
                 <LinkResultCard
                   link={link}
                   baseUrl={baseUrl}
@@ -184,24 +163,19 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          {/* Empty state */}
           {links.length === 0 && !isLoading && (
-            <div className="text-center py-24 clay-card max-w-2xl mx-auto mt-12 bg-transparent border-none shadow-none">
-              <div className="text-7xl mb-6 animate-float opacity-50">☁️</div>
-              <h3 className="text-2xl font-bold text-[var(--text-main)] mb-2">
-                No links crafted yet
-              </h3>
-              <p className="text-[var(--text-muted)] text-lg">
-                Paste your first link in the input above to get started.
+            <div className="text-center py-20 fade-up d2">
+              <div className="text-4xl mb-4 opacity-30">🔗</div>
+              <p className="text-sm text-[var(--text-2)]">
+                Paste your first URL above to get started.
               </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* ─── Footer ────────────────────────────────────────────── */}
-      <footer className="w-full py-8 text-center text-[var(--text-muted)] text-sm font-medium border-t border-[var(--border-color)] bg-[var(--bg-color)]">
-        Crafted with minimal clay & pastel dreams.
+      <footer className="w-full py-5 text-center text-[var(--text-3)] text-xs border-t border-[var(--border)]">
+        LinkForge
       </footer>
     </main>
   );

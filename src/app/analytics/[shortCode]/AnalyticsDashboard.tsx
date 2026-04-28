@@ -5,40 +5,24 @@ import {
   PieChart, Pie, Cell, Legend
 } from 'recharts';
 
-interface TimeData {
-  date: string;
-  clicks: number;
-}
+interface TimeData { date: string; clicks: number; }
+interface OSData { name: string; value: number; }
+interface Props { timeData: TimeData[]; osData: OSData[]; }
 
-interface OSData {
-  name: string;
-  value: number;
-}
+export default function AnalyticsDashboard({ timeData, osData }: Props) {
 
-interface AnalyticsDashboardProps {
-  timeData: TimeData[];
-  osData: OSData[];
-}
-
-export default function AnalyticsDashboard({ timeData, osData }: AnalyticsDashboardProps) {
-
-  // Pastel color palette for Pie Chart
-  const pieColors = ['#a9d6e5', '#f8ad9d', '#d3e298', '#faddaa', '#dfb2f4'];
+  const colors = ['#6C5CE7', '#E07C4F', '#34C759', '#5AC8FA', '#AF52DE'];
 
   const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
+    if (active && payload?.length) {
       return (
-        <div className="clay-card-flat px-4 py-3 bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-main)] shadow-[var(--shadow-drop)]">
-          <p className="font-bold text-sm mb-2 text-[var(--text-muted)]">{label}</p>
+        <div className="card px-3 py-2 text-sm" style={{ boxShadow: "var(--shadow-md)" }}>
+          <p className="text-[10px] font-semibold text-[var(--text-3)] mb-1">{label}</p>
           {payload.map((p: any, i: number) => (
-            <p key={i} className="font-semibold text-sm flex items-center justify-between gap-4">
-              <span className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: p.color !== '#000' && !p.color.includes('var') ? p.color : '#a9d6e5' }}></span>
-                {p.name}:
-              </span>
-              <span className="bg-[var(--bg-color)] px-2 py-[2px] rounded-md font-bold">
-                {p.value}
-              </span>
+            <p key={i} className="flex items-center gap-2 text-sm">
+              <span className="w-2 h-2 rounded-full" style={{ background: p.color }} />
+              <span className="text-[var(--text-2)]">{p.name}:</span>
+              <span className="font-semibold text-[var(--text-1)]">{p.value}</span>
             </p>
           ))}
         </div>
@@ -48,96 +32,56 @@ export default function AnalyticsDashboard({ timeData, osData }: AnalyticsDashbo
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pb-10">
 
-      {/* Line Chart: Clicks over time */}
-      <div className="lg:col-span-2 clay-card p-6 bg-[var(--card-bg)] border border-[var(--border-color)]">
-        <h3 className="text-xl font-bold text-[var(--text-main)] mb-6 flex items-center gap-2">
-          <svg className="w-5 h-5 text-[var(--color-pastel-blue)]" style={{ filter: "brightness(0.8) saturate(2)" }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <div className="lg:col-span-2 card p-5">
+        <h3 className="text-sm font-bold text-[var(--text-1)] mb-5 flex items-center gap-2" style={{ fontFamily: "var(--font-heading)" }}>
+          <svg className="w-4 h-4 text-[var(--accent)]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
           </svg>
           Clicks Timeline
         </h3>
-
-        <div className="h-[350px] w-full">
+        <div className="h-[320px]">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={timeData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="4 4" stroke="var(--border-color)" vertical={false} />
-              <XAxis
-                dataKey="date"
-                tick={{ fill: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}
-                axisLine={false}
-                tickLine={false}
-                padding={{ left: 10, right: 10 }}
-              />
-              <YAxis
-                tick={{ fill: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}
-                axisLine={false}
-                tickLine={false}
-                allowDecimals={false}
-              />
-              <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--text-muted)', strokeWidth: 1, strokeDasharray: '4 4' }} />
-              <Line
-                type="monotone"
-                dataKey="clicks"
-                stroke="#a9d6e5"
-                strokeWidth={4}
-                dot={{ r: 4, strokeWidth: 2, stroke: 'var(--card-bg)', fill: '#a9d6e5' }}
-                activeDot={{ r: 6, strokeWidth: 2, stroke: 'var(--card-bg)', fill: '#72abc2' }}
+            <LineChart data={timeData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="4 4" stroke="rgba(0,0,0,0.04)" vertical={false} />
+              <XAxis dataKey="date" tick={{ fill: '#AEAEB2', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: '#AEAEB2', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Line type="monotone" dataKey="clicks" stroke="#6C5CE7" strokeWidth={2.5}
+                dot={{ r: 3, fill: '#6C5CE7', stroke: '#fff', strokeWidth: 2 }}
+                activeDot={{ r: 5, fill: '#6C5CE7', stroke: '#fff', strokeWidth: 2 }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Pie Chart: OS Breakdown */}
-      <div className="clay-card p-6 bg-[var(--card-bg)] border border-[var(--border-color)] flex flex-col">
-        <h3 className="text-xl font-bold text-[var(--text-main)] mb-6 flex items-center gap-2">
-           <svg className="w-5 h-5 text-[var(--color-pastel-pink)]" style={{ filter: "brightness(0.9) saturate(1.5)" }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <div className="card p-5 flex flex-col">
+        <h3 className="text-sm font-bold text-[var(--text-1)] mb-5 flex items-center gap-2" style={{ fontFamily: "var(--font-heading)" }}>
+          <svg className="w-4 h-4 text-[var(--cta)]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
           </svg>
-          Device Breakdown
+          Devices
         </h3>
-
-        <div className="flex-1 h-[300px] w-full flex flex-col items-center justify-center">
+        <div className="flex-1 h-[280px]">
           {osData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie
-                  data={osData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={70}
-                  outerRadius={100}
-                  paddingAngle={5}
-                  dataKey="value"
-                  stroke="none"
-                >
-                  {osData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={pieColors[index % pieColors.length]}
-                    />
-                  ))}
+                <Pie data={osData} cx="50%" cy="50%" innerRadius={65} outerRadius={90} paddingAngle={4} dataKey="value" stroke="none">
+                  {osData.map((_, i) => <Cell key={i} fill={colors[i % colors.length]} />)}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  wrapperStyle={{ paddingTop: '20px', fontSize: '13px', fontWeight: 500, color: 'var(--text-main)' }}
-                  iconSize={10}
-                  iconType="circle"
-                />
+                <Legend wrapperStyle={{ fontSize: '11px', color: '#6E6E73' }} iconSize={7} iconType="circle" />
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-full w-full">
-              <span className="font-medium text-sm text-[var(--text-muted)] bg-[var(--bg-color)] px-4 py-2 rounded-full border border-[var(--border-color)]">
-                No data available yet
-              </span>
+            <div className="flex items-center justify-center h-full">
+              <span className="pill text-xs">No data yet</span>
             </div>
           )}
         </div>
       </div>
-
     </div>
   );
 }

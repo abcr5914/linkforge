@@ -14,7 +14,6 @@ export default function LinkInputBox({ onSubmit, isLoading }: LinkInputBoxProps)
 
   const handleChange = (value: string) => {
     setUrl(value);
-
     try {
       const hostname = new URL(value.trim()).hostname.toLowerCase();
       const platforms: Record<string, string> = {
@@ -45,26 +44,24 @@ export default function LinkInputBox({ onSubmit, isLoading }: LinkInputBoxProps)
     setDetectedPlatform(null);
   };
 
-  const platformColors: Record<string, string> = {
-    youtube: "bg-[#fee2e2] text-red-700",
-    spotify: "bg-[#dcfce7] text-green-700",
-    instagram: "bg-[#fce7f3] text-pink-700",
-    twitter: "bg-[#e0f2fe] text-blue-700",
-    reddit: "bg-[#ffedd5] text-orange-700",
-    linkedin: "bg-[#dbeafe] text-indigo-700",
-    facebook: "bg-[#dbeafe] text-blue-800",
-    tiktok: "bg-[#f3f4f6] text-gray-800",
-    pinterest: "bg-[#fee2e2] text-red-800",
+  const chipStyles: Record<string, string> = {
+    youtube: "bg-[var(--yt-bg)] text-[var(--yt-text)]",
+    spotify: "bg-[var(--sp-bg)] text-[var(--sp-text)]",
+    instagram: "bg-[var(--ig-bg)] text-[var(--ig-text)]",
+    twitter: "bg-[var(--tw-bg)] text-[var(--tw-text)]",
+    reddit: "bg-[var(--rd-bg)] text-[var(--rd-text)]",
+    linkedin: "bg-[var(--li-bg)] text-[var(--li-text)]",
+    facebook: "bg-[var(--fb-bg)] text-[var(--fb-text)]",
+    tiktok: "bg-[var(--tk-bg)] text-[var(--tk-text)]",
+    pinterest: "bg-[var(--pt-bg)] text-[var(--pt-text)]",
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full relative z-20">
-      <div className="clay-card p-3 flex flex-col sm:flex-row items-center gap-4 transition-all w-full backdrop-blur-sm">
-        
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="card p-1.5 flex flex-col sm:flex-row items-center gap-1.5">
+
         {detectedPlatform && (
-          <span
-            className={`shrink-0 px-4 py-2 rounded-2xl text-xs font-bold uppercase transition-fade-in ${platformColors[detectedPlatform] ?? "bg-[var(--card-bg)] text-[var(--text-muted)]"}`}
-          >
+          <span className={`shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide fade-in ${chipStyles[detectedPlatform] ?? "bg-[var(--bg-inset)] text-[var(--text-2)]"}`}>
             {getPlatformDisplayName(detectedPlatform)}
           </span>
         )}
@@ -73,8 +70,8 @@ export default function LinkInputBox({ onSubmit, isLoading }: LinkInputBoxProps)
           type="text"
           value={url}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Paste app URL here..."
-          className="flex-1 bg-transparent text-[var(--text-main)] placeholder-[var(--text-muted)] font-medium outline-none text-base px-2 py-3 min-w-0"
+          placeholder="Paste any app URL..."
+          className="flex-1 bg-transparent text-[var(--text-1)] placeholder-[var(--text-3)] outline-none text-sm px-3 py-2.5 min-w-0"
           disabled={isLoading}
           autoFocus
         />
@@ -82,19 +79,18 @@ export default function LinkInputBox({ onSubmit, isLoading }: LinkInputBoxProps)
         <button
           type="submit"
           disabled={isLoading || !url.trim()}
-          className="clay-btn clay-btn-primary w-full sm:w-auto px-8 py-3 text-base flex-shrink-0"
+          className="btn btn-primary w-full sm:w-auto px-5 py-2 text-sm"
         >
           {isLoading ? (
             <span className="flex items-center gap-2">
-              <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+              <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
               </svg>
-              Crafting...
+              Creating...
             </span>
           ) : "Generate"}
         </button>
-
       </div>
     </form>
   );

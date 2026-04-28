@@ -87,25 +87,25 @@ export default async function ShortCodePage({ params }: PageProps) {
   const androidDeepLink = getDeepLinkUri(link.originalUrl, link.targetApp, "Android");
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="glass-card p-8 rounded-3xl max-w-md w-full text-center animate-slide-up">
-        {/* Loading indicator */}
+    <div className="min-h-screen flex items-center justify-center p-6 bg-[var(--bg)]">
+      <div className="card p-8 sm:p-10 max-w-sm w-full text-center fade-up">
+        {/* Icon */}
         <div className="mb-6">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center animate-pulse-glow">
-            <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-[var(--accent)] flex items-center justify-center animate-pulse-glow">
+            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
             </svg>
           </div>
         </div>
 
-        <h1 className="text-xl font-bold text-white mb-2">
+        <h1 className="text-lg font-bold text-[var(--text-1)] mb-2" style={{ fontFamily: "var(--font-heading)" }}>
           Opening {link.targetApp ? link.targetApp.charAt(0).toUpperCase() + link.targetApp.slice(1) : "link"}...
         </h1>
-        <p className="text-sm text-gray-400 mb-6">
+        <p className="text-sm text-[var(--text-2)] mb-6">
           Redirecting you to the app. If nothing happens,{" "}
           <a
             href={link.originalUrl}
-            className="text-indigo-400 hover:text-indigo-300 underline"
+            className="text-[var(--accent)] hover:underline underline-offset-2"
           >
             click here
           </a>
@@ -114,26 +114,17 @@ export default async function ShortCodePage({ params }: PageProps) {
 
         {/* OG Preview */}
         {link.ogTitle && (
-          <div className="text-left p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] mb-4">
+          <div className="text-left p-3 rounded-xl card-inset mb-4">
             {link.ogImage && (
-              <img
-                src={link.ogImage}
-                alt={link.ogTitle}
-                className="w-full h-40 object-cover rounded-lg mb-3"
-              />
+              <img src={link.ogImage} alt={link.ogTitle} className="w-full h-36 object-cover rounded-lg mb-3" />
             )}
-            <p className="text-sm font-medium text-gray-200">
-              {link.ogTitle}
-            </p>
+            <p className="text-sm font-medium text-[var(--text-1)]">{link.ogTitle}</p>
             {link.ogDescription && (
-              <p className="text-xs text-gray-400 mt-1 line-clamp-2">
-                {link.ogDescription}
-              </p>
+              <p className="text-xs text-[var(--text-3)] mt-1 line-clamp-2">{link.ogDescription}</p>
             )}
           </div>
         )}
 
-        {/* Client-side redirect handler */}
         <RedirectHandler
           shortCode={shortCode}
           originalUrl={link.originalUrl}

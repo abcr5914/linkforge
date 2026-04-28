@@ -1,8 +1,12 @@
 /**
- * API Route: /api/links/[shortCode]/analytics
+ * API Route: /api/links/[id]/analytics
  *
  * GET - Returns analytics data for a specific short link:
  *       total click count, OS breakdown, and recent clicks.
+ *
+ * Note: This route uses [id] (the database ID) as the param to avoid
+ * conflicting with the sibling [id] DELETE route. The shortCode is
+ * also accepted as a fallback for backwards compatibility.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -10,20 +14,34 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ shortCode: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { shortCode } = await params;
+    const { id } = await params;
 
-    // Find the link by short code
-    const link = await prisma.link.findUnique({
-      where: { shortCode },
+    // Try to find by database ID first, then fall back to shortCode
+    // This supports both `/api/links/{cuid}/analytics` and
+    // `/api/links/{shortCode}/analytics` patterns
+    let link = await prisma.link.findUnique({
+      where: { id },
       include: {
         _count: {
           select: { clicks: true },
         },
       },
     });
+
+    // Fallback: try as shortCode (for backwards compatibility)
+    if (!link) {
+      link = await prisma.link.findUnique({
+        where: { shortCode: id },
+        include: {
+          _count: {
+            select: { clicks: true },
+          },
+        },
+      });
+    }
 
     if (!link) {
       return NextResponse.json(
@@ -59,7 +77,7 @@ export async function GET(
       createdAt: link.createdAt,
     });
   } catch (error) {
-    console.error("[GET /api/links/[shortCode]/analytics] Error:", error);
+    console.error("[GET /api/links/[id]/analytics] Error:", error);
     return NextResponse.json(
       { error: "Failed to fetch analytics." },
       { status: 500 }
