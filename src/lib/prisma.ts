@@ -24,7 +24,7 @@ function makePrismaClient() {
   const separator = databaseUrl.includes("?") ? "&" : "?";
   const urlWithTimeout = databaseUrl.includes("connect_timeout")
     ? databaseUrl
-    : `${databaseUrl}${separator}connect_timeout=15&pool_timeout=15`;
+    : `${databaseUrl}${separator}connect_timeout=5&pool_timeout=5`;
 
   return new PrismaClient({
     log: process.env.NODE_ENV === "development" ? ["query"] : [],

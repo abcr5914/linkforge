@@ -18,6 +18,14 @@ import RedirectHandler from "./RedirectHandler";
 import { getDeepLinkUri } from "@/lib/deeplink-schemes";
 
 // ---------------------------------------------------------------------------
+// ISR: Cache this page at the edge for 24 hours.
+// After the first render, Vercel serves all subsequent requests (including
+// bot swarms from Discord/Twitter/iMessage) from CDN — zero function
+// invocations. The page revalidates in the background after 24h.
+// ---------------------------------------------------------------------------
+export const revalidate = 86400;
+
+// ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 interface PageProps {
